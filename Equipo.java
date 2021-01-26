@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class Equipo implements Comparable<Equipo> {
     private String nombre;
@@ -18,6 +17,7 @@ public class Equipo implements Comparable<Equipo> {
     private String categoria;
     private Dt dt;
     private List<Jugador> jugadores;
+    private List<ContratoJugador> contratos;
 
     public Equipo(String nombre, LocalDate fechaFundacion, String nombrePresidente, String apellidoPresidente, Direccion direccion, int telefonos,
                   String emails, LocalDate fechaPrimeraDivision, String categoria, Dt dt) {
@@ -32,7 +32,32 @@ public class Equipo implements Comparable<Equipo> {
         this.categoria = categoria;
         this.dt = dt;
         this.jugadores = new ArrayList<>();
+        contratos = new ArrayList<>();
     }
+
+    public void agregarContrato(ContratoJugador nuevoContrato){
+        if(contratos.isEmpty()){
+            contratos.add(nuevoContrato);
+        }else {
+            if(!contratos.contains(nuevoContrato)){
+                contratos.add(nuevoContrato);
+            }else {
+                System.out.println("El equipo ya tiene ese contrato");
+            }
+        }
+    }
+
+    public int devolverCantidadDeJugadoresEnUnaFechaEspecifica(LocalDate fecha){
+        int resultado= 0;
+        for (ContratoJugador contrato: contratos) {
+            Boolean jugadorJugoEnEquipo = contrato.getJugador().devolverSiUnJugadorJugoEnUnEquipoEnUnaFecha(fecha, this.nombre);
+            if (jugadorJugoEnEquipo){
+                resultado++;
+            }
+        }
+        return resultado;
+    }
+
 
     public void agregarJugador(Jugador jugador){
         if(!jugadores.contains(jugador)){

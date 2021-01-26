@@ -1,6 +1,8 @@
 package ejercicioEquipoFootball;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Jugador extends Persona{
     private String club;
@@ -12,6 +14,7 @@ public class Jugador extends Persona{
     private int peso;
     private float altura;
     private String posicion;
+    private List<ContratoJugador> contratos;
 
     public Jugador(String nombre, String apellido, int dni, Direccion direccion, int telefono, String email, String club, LocalDate fechaQueJugo,
                    LocalDate fechaDebut, LocalDate fechaNacimiento, int cantidadPartidos, int cantidadGoles, int peso, float altura, String posicion) {
@@ -25,9 +28,51 @@ public class Jugador extends Persona{
         this.peso = peso;
         this.altura = altura;
         this.posicion = posicion;
+        contratos = new ArrayList<>();
     }
 
+    public void agregarContrato(ContratoJugador nuevoContrato){
+        Boolean resultado = false;
+        if(contratos.isEmpty()){
+            contratos.add(nuevoContrato);
+        }else{
+            for (ContratoJugador contrato: contratos) {
+                if(nuevoContrato.getFechaInicioContrato().isBefore(contrato.getFechaFinContrato()) &&
+                        nuevoContrato.getFechaFinContrato().isAfter(contrato.getFechaInicioContrato()) ){
+                    resultado = true;
+                }
+            }
+            if(resultado) {
+                System.out.println("El jugador ya tiene un contrato en esa fecha");
+            }else {
+                if(!contratos.contains(nuevoContrato)){
+                    contratos.add(nuevoContrato);
+                }else {
+                    System.out.println("El jugador ya tiene ese contrato");
+                }
+            }
+        }
 
+    }
+
+    public Boolean devolverSiUnJugadorJugoEnUnEquipoEnUnaFecha(LocalDate fecha, String nombreEquipo){
+        Boolean resultado = false;
+        for (ContratoJugador contrato: contratos) {
+            if(fecha.isAfter(contrato.getFechaInicioContrato()) && fecha.isBefore(contrato.getFechaFinContrato()) &&
+            nombreEquipo.equals(contrato.getEquipo().getNombre())){
+                resultado = true;
+            }
+        }
+        return resultado;
+    }
+
+    public List<ContratoJugador> getContratos() {
+        return contratos;
+    }
+
+    public void setContratos(List<ContratoJugador> contratos) {
+        this.contratos = contratos;
+    }
 
     public String getClub() {
         return club;
